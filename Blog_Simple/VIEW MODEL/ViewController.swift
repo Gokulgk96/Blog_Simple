@@ -9,9 +9,13 @@ import UIKit
 
 var apicaller : articles = articles(articles: [])
 
+
+
 class ViewController: UIViewController {
 
     @IBOutlet weak var Table_View_model: UITableView!
+    
+    var refreshControl: UIRefreshControl?
     
 
     override func viewDidLoad() {
@@ -28,9 +32,33 @@ class ViewController: UIViewController {
          
             self.Table_View_model.reloadData()
             
+           
+            
         }
-   
+    
+        reloadingdata()
     }
+    
+    func reloadingdata()
+    {
+        refreshControl = UIRefreshControl()
+        refreshControl?.tintColor = UIColor.red
+        refreshControl?.addTarget(self, action: #selector(refreshlist), for: .valueChanged)
+        Table_View_model.addSubview(refreshControl!)
+    }
+    
+    @objc func refreshlist()
+    {
+        JsonDownloader{
+            
+            self.Table_View_model.reloadData()
+           
+        }
+        
+        print("refreshed")
+        refreshControl?.endRefreshing()
+    }
+
     
 
     func JsonDownloader(completed: @escaping () -> ())
